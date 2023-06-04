@@ -6,7 +6,7 @@
         "logging",
         "distributed logging",
         "logging on queue",
-        "logging on redis",
+        "logging on redis"
     ],
     "type": "library",
     "license": "MIT",
@@ -33,5 +33,5 @@
                 "Bnsal\\DistributedLogger\\DistributedLoggingProvider"
             ]
         }
-    },
+    }
 }
