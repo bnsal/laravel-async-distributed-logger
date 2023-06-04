@@ -48,12 +48,10 @@ class DistributedLoggingController
     public function setResponse($response) {
 
         if( request()->isMethod('post') && $response && $response instanceof Illuminate\Http\Response && isset($response->headers) && $response->headers && $response->headers->header('Content-type') && !stripos($response->headers->header('Content-type'), "html") ) {
-            $this->should_dump = true;
             $this->object['data']['response'] = $response->getContent();
         }
 
         if( $response && $response instanceof Illuminate\Http\Response && isset($response->headers) && $response->headers && $response->headers->header('Content-type') && stripos($response->headers->header('Content-type'), "json") ) {
-            $this->should_dump = true;
             $this->object['data']['response'] = $response->getContent();
         }
 
@@ -64,9 +62,7 @@ class DistributedLoggingController
     public function addLogEntry($record) {
         if( $record['level'] >= 400 ) {
             $this->should_dump = true;
-            echo 'yess';
         }
-        //echo '<pre>------'; print_r($record); echo "---</pre>";
 
         $msg = [];
         $msg['message'] = $record['message'];
