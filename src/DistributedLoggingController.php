@@ -11,6 +11,8 @@ class DistributedLoggingController
     
     public $object = null;
 
+    public $should_dump = false;
+
     public function __construct() {
         $this->object = [
             "url" => request()->fullUrl(),
@@ -42,13 +44,24 @@ class DistributedLoggingController
     }
 
     public function setResponse($response) {
+        if( request()->isMethod('post') || ($response && isset($response->headers) && $response->headers && $response->headers->header('Content-type') && stripos($response->headers->header('Content-type'), "json")) ) {
+            $this->should_dump = true;
+        }
+
         $this->object['data']['response'] = $response->getContent();
         $this->object['response_status_code'] = $response->status();
         $this->object['data']['response_at'] = intval(microtime(true) * 1000);
     }
 
-    public function addLogEntry($entry) {
-        $this->object['logs'][] = $entry;
+    public function addLogEntry($record) {
+        if( $record['level'] >= 400 ) {
+            $this->should_dump = true;
+        }
+        $this->object['logs'][] = $record['message'];
+    }
+
+    public function isDumpable() {
+        return $this->should_dump;
     }
 
     public function dump() {

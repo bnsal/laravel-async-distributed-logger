@@ -18,16 +18,19 @@ class DistributedLoggingMiddleware {
     public function terminate($request, $response) {
         $distributedLoggingController = App::make(DistributedLoggingController::class);
         $distributedLoggingController->setResponse($response);
-        $json = json_encode($distributedLoggingController->dump());
 
-        if( config('bnsallogging.queue_enabled') ) {
-            if( config('bnsallogging.queue_driver') ) {
-                DistributedLoggingQueueJob::dispatch($json)->onConnection( config('bnsallogging.queue_driver') );
-            } else {
-                DistributedLoggingQueueJob::dispatch($json);
+        if( $distributedLoggingController->isDumpable() ) {
+            $json = json_encode($distributedLoggingController->dump());
+            if( config('bnsallogging.queue_enabled') ) {
+                if( config('bnsallogging.queue_driver') ) {
+                    DistributedLoggingQueueJob::dispatch($json)->onConnection( config('bnsallogging.queue_driver') );
+                } else {
+                    DistributedLoggingQueueJob::dispatch($json);
+                }
             }
-        }
 
-        \Log::channel( config('bnsallogging.logging_channel', 'single') )->info($json);
+            \Log::channel( config('bnsallogging.logging_channel', 'single') )->info($json);
+        }
+        
     }
 }

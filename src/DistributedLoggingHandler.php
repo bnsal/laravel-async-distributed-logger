@@ -19,7 +19,7 @@ class DistributedLoggingHandler extends AbstractProcessingHandler {
 
     protected function write(array $record): void {
         $distributedLoggingController = App::make(DistributedLoggingController::class);
-        $distributedLoggingController->addLogEntry($record['message']);
+        $distributedLoggingController->addLogEntry($record);
     }
 
 }
