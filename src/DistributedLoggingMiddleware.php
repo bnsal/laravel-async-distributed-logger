@@ -20,7 +20,12 @@ class DistributedLoggingMiddleware {
         $distributedLoggingController->setResponse($response);
 
         if( $distributedLoggingController->isDumpable() ) {
-            $json = json_encode($distributedLoggingController->dump());
+            if( $distributedLoggingController->isPrettyPrint() ) {
+                $json = json_encode($distributedLoggingController->dump(), JSON_PRETTY_PRINT);
+            } else {
+                $json = json_encode($distributedLoggingController->dump());
+            }
+            
             if( config('bnsallogging.queue_enabled') ) {
                 if( config('bnsallogging.queue_driver') ) {
                     DistributedLoggingQueueJob::dispatch($json)->onConnection( config('bnsallogging.queue_driver') );
@@ -31,6 +36,6 @@ class DistributedLoggingMiddleware {
 
             \Log::channel( config('bnsallogging.logging_channel', 'single') )->info($json);
         }
-        
+
     }
 }

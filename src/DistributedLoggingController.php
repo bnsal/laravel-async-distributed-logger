@@ -13,6 +13,8 @@ class DistributedLoggingController
 
     public $should_dump = false;
 
+    public $should_pretty_print = false;
+
     public function __construct() {
         $this->object = [
             "url" => request()->fullUrl(),
@@ -44,11 +46,17 @@ class DistributedLoggingController
     }
 
     public function setResponse($response) {
-        if( request()->isMethod('post') || ($response && isset($response->headers) && $response->headers && $response->headers->header('Content-type') && stripos($response->headers->header('Content-type'), "json")) ) {
+
+        if( request()->isMethod('post') && $response && $response instanceof Illuminate\Http\Response && isset($response->headers) && $response->headers && $response->headers->header('Content-type') && !stripos($response->headers->header('Content-type'), "html") ) {
             $this->should_dump = true;
+            $this->object['data']['response'] = $response->getContent();
         }
 
-        $this->object['data']['response'] = $response->getContent();
+        if( $response && $response instanceof Illuminate\Http\Response && isset($response->headers) && $response->headers && $response->headers->header('Content-type') && stripos($response->headers->header('Content-type'), "json") ) {
+            $this->should_dump = true;
+            $this->object['data']['response'] = $response->getContent();
+        }
+
         $this->object['response_status_code'] = $response->status();
         $this->object['data']['response_at'] = intval(microtime(true) * 1000);
     }
@@ -56,12 +64,33 @@ class DistributedLoggingController
     public function addLogEntry($record) {
         if( $record['level'] >= 400 ) {
             $this->should_dump = true;
+            echo 'yess';
         }
-        $this->object['logs'][] = $record['message'];
+        //echo '<pre>------'; print_r($record); echo "---</pre>";
+
+        $msg = [];
+        $msg['message'] = $record['message'];
+        if( isset($record['context']) && isset($record['context']['exception']) && $record['context']['exception'] ) {
+            $this->should_pretty_print = true;
+            $exception = $record['context']['exception'];
+            $msg['exception'] = sprintf(
+                "Uncaught exception '%s' with message '%s' in %s:%d",
+                get_class($exception),
+                $exception->getMessage(),
+                $exception->getTrace()[0]['file'],
+                $exception->getTrace()[0]['line']
+            );
+        }
+
+        $this->object['logs'][] = $msg;
     }
 
     public function isDumpable() {
         return $this->should_dump;
+    }
+
+    public function isPrettyPrint() {
+        return $this->should_pretty_print;
     }
 
     public function dump() {
