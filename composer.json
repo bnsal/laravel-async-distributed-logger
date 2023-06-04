@@ -1,0 +1,37 @@
+{
+    "name": "bnsal/distributed-logger",
+    "description": "A Laravel package to enable distributed logging for your application",
+    "keywords": [
+        "Bnsal",
+        "logging",
+        "distributed logging",
+        "logging on queue",
+        "logging on redis",
+    ],
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Bnsal\\DistributedLogger\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Keshav Bansal",
+            "email": "keshav@bnsal.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "php": "^7.2|^8.0",
+        "laravel/framework": "^6.0|^7.0|^8.0"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Bnsal\\DistributedLogger\\DistributedLoggingProvider"
+            ]
+        }
+    },
+}
