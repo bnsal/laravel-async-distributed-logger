@@ -20,4 +20,6 @@ return [
 
     'log_level' => Logger::DEBUG,
 
+    'log_print_level_index' => 10,
+
 ];

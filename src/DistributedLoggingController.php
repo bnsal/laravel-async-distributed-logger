@@ -60,7 +60,7 @@ class DistributedLoggingController
     }
 
     public function addLogEntry($record) {
-        if( $record['level'] >= 400 ) {
+        if( $record['level'] >= config( 'bnsallogging.log_print_level_index' ) ) {
             $this->should_dump = true;
         }
 
