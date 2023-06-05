@@ -51,13 +51,14 @@ class DistributedLoggingController
 
         if( request()->isMethod('post') && $response && $response instanceof Illuminate\Http\Response && isset($response->headers) && $response->headers && $response->headers->header('Content-type') && !stripos($response->headers->header('Content-type'), "html") ) {
             $this->object['data']['response'] = $response->getContent();
+            $this->object['response_status_code'] = $response->status();
         }
 
         if( $response && $response instanceof Illuminate\Http\Response && isset($response->headers) && $response->headers && $response->headers->header('Content-type') && stripos($response->headers->header('Content-type'), "json") ) {
             $this->object['data']['response'] = $response->getContent();
+            $this->object['response_status_code'] = $response->status();
         }
 
-        $this->object['response_status_code'] = $response->status();
         $this->object['data']['response_at'] = intval(microtime(true) * 1000);
         $this->object['data']['response_at_readbale'] = now()->toDateTimeString();
     }
