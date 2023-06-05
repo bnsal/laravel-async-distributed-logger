@@ -33,7 +33,6 @@ class DistributedLoggingQueueJob implements ShouldQueue {
      * @return void
      */
     public function handle() {
-        Log::emergency("queue processed and following log retrieved");
         Log::emergency($this->data);
     }
 }
