@@ -31,7 +31,9 @@ class DistributedLoggingController
                 "request" => request()->all(),
                 "response" => null,
                 "requeat_at" => intval(microtime(true) * 1000),
-                "response_at" => null
+                "response_at" => null,
+                "requeat_at_readbale" => now()->toDateTimeString(),
+                "response_at_readbale" => null
             ],
 
             "logs" => []
@@ -57,6 +59,7 @@ class DistributedLoggingController
 
         $this->object['response_status_code'] = $response->status();
         $this->object['data']['response_at'] = intval(microtime(true) * 1000);
+        $this->object['data']['response_at_readbale'] = now()->toDateTimeString();
     }
 
     public function addLogEntry($record) {
