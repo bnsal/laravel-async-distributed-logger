@@ -33,6 +33,6 @@ class DistributedLoggingQueueJob implements ShouldQueue {
      * @return void
      */
     public function handle() {
-        Log::emergency($this->data);
+        \Log::stack( config('bnsallogging.logging_channel', ['stack']) )->emergency($this->data);
     }
 }
