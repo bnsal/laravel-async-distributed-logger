@@ -22,7 +22,7 @@ class DistributedLoggingController
             "user_agent" => @$_SERVER['HTTP_USER_AGENT'],
             "refer" => @$_SERVER['HTTP_REFERER'],
             "clientIp:" => @$this->clientIp(),
-            "machineIp" => @$_SERVER['REMOTE_ADDR'],
+            "machineIp" => @$this->privateIp(),
             "response_status_code" => null,
 
 
@@ -87,6 +87,16 @@ class DistributedLoggingController
 
     public function isPrettyPrint() {
         return $this->should_pretty_print;
+    }
+
+
+    public function privateIp() {
+        $str = str_replace('-', '.', str_replace( 'ip-', '', gethostname() ) );
+        if( substr_count( $str, "." ) > 3 ) {
+            $parts = explode(".", $str);
+            $str = $parts[0] . '.' . $parts[1] . '.' . $parts[2] . '.' . $parts[3];
+        }
+        return $str;
     }
 
     public function dump() {
