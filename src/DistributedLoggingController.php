@@ -28,7 +28,7 @@ class DistributedLoggingController
 
             "data" => [
                 "request_hashes" => [],
-                "request" => json_encode(request()->all()),
+                "request" => request()->all(),
                 "response" => null,
                 "requeat_at" => intval(microtime(true) * 1000),
                 "response_at" => null
