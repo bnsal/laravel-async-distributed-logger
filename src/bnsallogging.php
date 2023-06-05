@@ -14,9 +14,9 @@ return [
 
     'queue_driver' => null,
 
-    'disable_default_logging' => true,
+    'disable_default_logging' => false,
 
-    'logging_channel' => 'single',
+    'logging_channel' => ['stack'],
 
     'log_level' => Logger::DEBUG,
 
