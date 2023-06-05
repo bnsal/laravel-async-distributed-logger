@@ -33,7 +33,7 @@ class DistributedLoggingMiddleware {
                     DistributedLoggingQueueJob::dispatch($json);
                 }
             } else {
-                \Log::channel( config('bnsallogging.logging_channel', 'single') )->info($json);
+                \Log::stack( config('bnsallogging.logging_channel', 'single') )->info($json);
             }
         }
 
