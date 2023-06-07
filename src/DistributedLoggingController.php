@@ -76,9 +76,9 @@ class DistributedLoggingController
             $msg['exception'] = sprintf(
                 "Uncaught exception '%s' with message '%s' in %s:%d",
                 get_class($exception),
-                $exception->getMessage(),
-                $exception->getTrace()[0]['file'],
-                $exception->getTrace()[0]['line']
+                @$exception->getMessage(),
+                @$exception->getTrace()[0]['file'],
+                @$exception->getTrace()[0]['line']
             );
         }
 
