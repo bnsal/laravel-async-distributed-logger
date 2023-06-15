@@ -1,12 +1,16 @@
 {
-    "name": "bnsal/distributed-logger",
-    "description": "A Laravel package to enable distributed logging for your application",
+    "name": "bnsal/laravel-async-distributed-logger",
+    "description": "Laravel package to enable async distributed logging for your application",
     "keywords": [
         "Bnsal",
         "logging",
         "distributed logging",
         "logging on queue",
-        "logging on redis"
+        "logging on redis",
+        "async logging",
+        "logging by redis",
+        "logging by database",
+        "logging by sqs"
     ],
     "type": "library",
     "license": "MIT",

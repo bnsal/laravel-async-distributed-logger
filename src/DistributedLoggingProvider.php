@@ -42,5 +42,16 @@ class DistributedLoggingProvider extends ServiceProvider {
 
         $router = $this->app['router'];         
         $router->pushMiddlewareToGroup('web', DistributedLoggingMiddleware::class);
+
+        if( config('bnsallogging.eventsToLog') ) {
+            $eventsToLog = config('bnsallogging.eventsToLog');
+            foreach ($eventsToLog as $key => $event) {
+                \Illuminate\Support\Facades\Event::listen(
+                    $event,
+                    LoggingListener::class
+                );
+            }
+        }
+
     }
 }

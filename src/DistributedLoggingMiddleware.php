@@ -16,26 +16,28 @@ class DistributedLoggingMiddleware {
     }
 
     public function terminate($request, $response) {
-        $distributedLoggingController = App::make(DistributedLoggingController::class);
-        $distributedLoggingController->setResponse($response);
+        try {
+            $distributedLoggingController = App::make(DistributedLoggingController::class);
+            $distributedLoggingController->setResponse($response);
 
-        if( $distributedLoggingController->isDumpable() ) {
-            if( $distributedLoggingController->isPrettyPrint() ) {
-                $json = json_encode($distributedLoggingController->dump(), JSON_PRETTY_PRINT);
-            } else {
-                $json = json_encode($distributedLoggingController->dump());
-            }
-            
-            if( config('bnsallogging.queue_enabled') ) {
-                if( config('bnsallogging.queue_driver') ) {
-                    DistributedLoggingQueueJob::dispatch($json)->onConnection( config('bnsallogging.queue_driver') );
+            if( $distributedLoggingController->isDumpable() ) {
+                if( $distributedLoggingController->isPrettyPrint() || config('bnsallogging.pretty_print') ) {
+                    $json = json_encode($distributedLoggingController->dump(), JSON_PRETTY_PRINT);
                 } else {
-                    DistributedLoggingQueueJob::dispatch($json);
+                    $json = json_encode($distributedLoggingController->dump());
                 }
-            } else {
-                \Log::stack( config('bnsallogging.logging_channel', ['stack']) )->info($json);
+                
+                if( config('bnsallogging.queue_enabled') ) {
+                    if( config('bnsallogging.queue_driver') ) {
+                        DistributedLoggingQueueJob::dispatch($json)->onConnection( config('bnsallogging.queue_driver') );
+                    } else {
+                        DistributedLoggingQueueJob::dispatch($json);
+                    }
+                } else {
+                    \Log::stack( config('bnsallogging.logging_channel', ['stack']) )->info($json);
+                }
+                $distributedLoggingController->cleanLogs();
             }
-        }
-
+        } catch ( \Exception $e ) {}
     }
 }
